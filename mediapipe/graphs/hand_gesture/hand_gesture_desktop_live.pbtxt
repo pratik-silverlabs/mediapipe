@@ -30,6 +30,7 @@ node {
   input_side_packet: "GESTURE_MODELPATH:gesture_model_path"
   output_stream: "LANDMARKS:landmarks"
   output_stream: "HANDEDNESS:handedness"
+  output_stream: "PLAYER_INTENTION:rock_paper_scissor"
   output_stream: "PALM_DETECTIONS:multi_palm_detections"
   output_stream: "HAND_ROIS_FROM_LANDMARKS:multi_hand_rects"
   output_stream: "HAND_ROIS_FROM_PALM_DETECTIONS:multi_palm_rects"
@@ -45,5 +46,6 @@ node {
   input_stream: "HANDEDNESS:handedness"
   input_stream: "NORM_RECTS:0:multi_palm_rects"
   input_stream: "NORM_RECTS:1:multi_hand_rects"
+  input_stream: "PLAYER_INTENTION:rock_paper_scissor"
   output_stream: "IMAGE:output_video"
 }

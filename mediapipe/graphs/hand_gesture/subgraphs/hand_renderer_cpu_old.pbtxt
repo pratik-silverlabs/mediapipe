@@ -19,11 +19,8 @@ input_stream: "NORM_RECTS:1:multi_hand_rects"
 # Detected palms. (std::vector<Detection>)
 input_stream: "DETECTIONS:palm_detections"
 
-input_stream: "PLAYER_INTENTION:rock_paper_scissor"
-
 # Updated CPU image. (ImageFrame)
 output_stream: "IMAGE:output_image"
-
 
 # Converts detections to drawing primitives for annotation overlay.
 node {
@@ -198,37 +195,6 @@ node {
   }
 }
 
-node {
-  calculator: "GateCalculator"
-  input_stream: "rock_paper_scissor"
-  input_stream: "DISALLOW:disallow_handedness_rendering"
-  output_stream: "allowed_rock_paper_scissor"
-  node_options: {
-    [type.googleapis.com/mediapipe.GateCalculatorOptions] {
-      empty_packets_as_allow: false
-    }
-  }
-}
-
-# Converts classification to drawing primitives for annotation overlay.
-node {
-  calculator: "LabelsToRenderDataCalculator"
-  input_stream: "CLASSIFICATIONS:allowed_rock_paper_scissor"
-  output_stream: "RENDER_DATA:rock_paper_scissors_render_data"
-  node_options: {
-    [type.googleapis.com/mediapipe.LabelsToRenderDataCalculatorOptions]: {
-      color { r: 255 g: 0 b: 200 }
-      thickness: 10.0
-      font_height_px: 50
-      horizontal_offset_px: 30
-      vertical_offset_px: 50
-
-      max_num_labels: 1
-      location: TOP_LEFT
-    }
-  }
-}
-
 # Draws annotations and overlays them on top of the input images. Consumes
 # a vector of RenderData objects and draws each of them on the input frame.
 node {
@@ -238,7 +204,6 @@ node {
   input_stream: "multi_hand_rects_render_data"
   input_stream: "multi_palm_rects_render_data"
   input_stream: "handedness_render_data"
-  # input_stream: "rock_paper_scissors_render_data"
   input_stream: "VECTOR:0:multi_hand_landmarks_render_data"
   output_stream: "IMAGE:output_image"
 }
