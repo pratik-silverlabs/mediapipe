@@ -145,7 +145,7 @@ node {
 
 node {
   calculator: "PassThroughCalculator"
-  input_stream: "ensured_handedness_tensor"
+  input_stream: "ensured_landmark_tensors"
   output_stream: "hand_tensors"
 }
 

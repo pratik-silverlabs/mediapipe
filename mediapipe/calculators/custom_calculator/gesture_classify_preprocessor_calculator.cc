@@ -94,8 +94,8 @@ absl::Status GestureClassifyPreprocessorCalculator::Process(CalculatorContext* c
   const auto& input_tensors = *kInTensors(cc);
   // std::cout << input_tensors.size() << std::endl; // size of input vector
   // std::cout << input_tensors[0].shape().dims.size() << std::endl; // num dimesions in tensor
-  std::cout << input_tensors[0].shape().dims.data()[0] << std::endl; // data in 0th dimension of tensor
-  std::cout << input_tensors[0].shape().dims.data()[1] << std::endl; // data in 1st dimension of tensor
+  // std::cout << input_tensors[0].shape().dims.data()[0] << std::endl; // data in 0th dimension of tensor
+  // std::cout << input_tensors[0].shape().dims.data()[1] << std::endl; // data in 1st dimension of tensor
 
   int num_values = input_tensors[0].shape().num_elements();
   const int num_dimensions = num_values / num_landmarks_;

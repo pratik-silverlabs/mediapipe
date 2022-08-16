@@ -151,7 +151,6 @@ absl::Status TensorsToLandmarksCalculator::Process(CalculatorContext* cc) {
   for (int ld = 0; ld < num_landmarks_; ++ld) {
     const int offset = ld * num_dimensions;
     Landmark* landmark = output_landmarks.add_landmark();
-    std::cout << raw_landmarks[offset] << ", "<<raw_landmarks[offset+1]<< std::endl;
 
     if (flip_horizontally) {
       landmark->set_x(options_.input_image_width() - raw_landmarks[offset]);
