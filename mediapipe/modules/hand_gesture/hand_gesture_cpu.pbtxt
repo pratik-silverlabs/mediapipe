@@ -260,7 +260,7 @@ node {
     [mediapipe.TensorsToClassificationCalculatorOptions.ext] {
       top_k: 1
       label_map_path: "mediapipe/modules/hand_gesture/keypoint_classifier_label_rps.txt"
-      binary_classification: true
+      # binary_classification: true
     }
   }
 }

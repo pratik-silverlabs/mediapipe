@@ -151,6 +151,7 @@ absl::Status TensorsToLandmarksCalculator::Process(CalculatorContext* cc) {
   for (int ld = 0; ld < num_landmarks_; ++ld) {
     const int offset = ld * num_dimensions;
     Landmark* landmark = output_landmarks.add_landmark();
+    std::cout << raw_landmarks[offset] << ", "<<raw_landmarks[offset+1]<< std::endl;
 
     if (flip_horizontally) {
       landmark->set_x(options_.input_image_width() - raw_landmarks[offset]);
@@ -184,6 +185,8 @@ absl::Status TensorsToLandmarksCalculator::Process(CalculatorContext* cc) {
     for (int i = 0; i < output_landmarks.landmark_size(); ++i) {
       const Landmark& landmark = output_landmarks.landmark(i);
       NormalizedLandmark* norm_landmark = output_norm_landmarks.add_landmark();
+      // std::cout << landmark.x() << std::endl;
+      // std::cout << landmark.y() << std::endl;
       norm_landmark->set_x(landmark.x() / options_.input_image_width());
       norm_landmark->set_y(landmark.y() / options_.input_image_height());
       // Scale Z coordinate as X + allow additional uniform normalization.

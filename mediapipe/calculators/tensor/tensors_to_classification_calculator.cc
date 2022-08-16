@@ -206,6 +206,7 @@ absl::Status TensorsToClassificationCalculator::Process(CalculatorContext* cc) {
       classification->set_score(raw_scores[i]);
       if (label_map_loaded_) {
         SetClassificationLabel(GetLabelMap(cc).at(i), classification);
+        // std::cout << classification->label() << std::endl;
       }
     }
   }
@@ -233,6 +234,9 @@ absl::Status TensorsToClassificationCalculator::Process(CalculatorContext* cc) {
               });
   }
   kOutClassificationList(cc).Send(std::move(classification_list));
+
+  std::cout << raw_classification_list->at(0).label() << std::endl;
+
   return absl::OkStatus();
 }
 

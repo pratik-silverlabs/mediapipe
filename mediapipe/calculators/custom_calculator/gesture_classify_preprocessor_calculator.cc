@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+#include <iostream>
 #include "mediapipe/calculators/tensor/tensors_to_landmarks_calculator.pb.h"
 #include "mediapipe/framework/api2/node.h"
 #include "mediapipe/framework/calculator_framework.h"
@@ -50,20 +50,6 @@ namespace {
 //  TENSORS - Vector of Tensors of type kFloat32. Only the first tensor will be
 //  used. The size of the values must be (num_dimension x num_landmarks).
 //
-//  FLIP_HORIZONTALLY (optional): Whether to flip landmarks horizontally or
-//  not. Overrides corresponding side packet and/or field in the calculator
-//  options.
-//
-//  FLIP_VERTICALLY (optional): Whether to flip landmarks vertically or not.
-//  Overrides corresponding side packet and/or field in the calculator options.
-//
-// Input side packet:
-//   FLIP_HORIZONTALLY (optional): Whether to flip landmarks horizontally or
-//   not. Overrides the corresponding field in the calculator options.
-//
-//   FLIP_VERTICALLY (optional): Whether to flip landmarks vertically or not.
-//   Overrides the corresponding field in the calculator options.
-//
 // Output:
 //  LANDMARKS(optional) - Result MediaPipe landmarks.
 //  NORM_LANDMARKS(optional) - Result MediaPipe normalized landmarks.
@@ -82,15 +68,6 @@ class GestureClassifyPreprocessorCalculator : public Node {
  public:
   static constexpr Input<std::vector<Tensor>> kInTensors{"TENSORS"};
   static constexpr Output<std::vector<Tensor>> kOutTensors{"TENSORS_NORM"};
-  // static constexpr Input<bool>::SideFallback::Optional kFlipHorizontally{
-  //     "FLIP_HORIZONTALLY"};
-  // static constexpr Input<bool>::SideFallback::Optional kFlipVertically{
-  //     "FLIP_VERTICALLY"};
-  // static constexpr Output<LandmarkList>::Optional kOutLandmarkList{"LANDMARKS"};
-  // static constexpr Output<NormalizedLandmarkList>::Optional
-  //     kOutNormalizedLandmarkList{"NORM_LANDMARKS"};
-  // MEDIAPIPE_NODE_CONTRACT(kInTensors, kFlipHorizontally, kFlipVertically,
-  //                         kOutLandmarkList, kOutNormalizedLandmarkList);
   MEDIAPIPE_NODE_CONTRACT(kInTensors, kOutTensors);
 
   absl::Status Open(CalculatorContext* cc) override;
@@ -106,20 +83,6 @@ MEDIAPIPE_REGISTER_NODE(GestureClassifyPreprocessorCalculator);
 absl::Status GestureClassifyPreprocessorCalculator::Open(CalculatorContext* cc) {
   MP_RETURN_IF_ERROR(LoadOptions(cc));
 
-  // if (kOutNormalizedLandmarkList(cc).IsConnected()) {
-  //   RET_CHECK(options_.has_input_image_height() &&
-  //             options_.has_input_image_width())
-  //       << "Must provide input width/height for getting normalized landmarks.";
-  // }
-  // if (kOutLandmarkList(cc).IsConnected() &&
-  //     (options_.flip_horizontally() || options_.flip_vertically() ||
-  //      kFlipHorizontally(cc).IsConnected() ||
-  //      kFlipVertically(cc).IsConnected())) {
-  //   RET_CHECK(options_.has_input_image_height() &&
-  //             options_.has_input_image_width())
-  //       << "Must provide input width/height for using flipping when outputing "
-  //          "landmarks in absolute coordinates.";
-  // }
   return absl::OkStatus();
 }
 
@@ -127,14 +90,17 @@ absl::Status GestureClassifyPreprocessorCalculator::Process(CalculatorContext* c
   if (kInTensors(cc).IsEmpty()) {
     return absl::OkStatus();
   }
-  // bool flip_horizontally =
-  //     kFlipHorizontally(cc).GetOr(options_.flip_horizontally());
-  // bool flip_vertically = kFlipVertically(cc).GetOr(options_.flip_vertically());
 
   const auto& input_tensors = *kInTensors(cc);
+  // std::cout << input_tensors.size() << std::endl; // size of input vector
+  // std::cout << input_tensors[0].shape().dims.size() << std::endl; // num dimesions in tensor
+  std::cout << input_tensors[0].shape().dims.data()[0] << std::endl; // data in 0th dimension of tensor
+  std::cout << input_tensors[0].shape().dims.data()[1] << std::endl; // data in 1st dimension of tensor
+
   int num_values = input_tensors[0].shape().num_elements();
   const int num_dimensions = num_values / num_landmarks_;
-  CHECK_GT(num_dimensions, 0);
+
+  // CHECK_GT(num_dimensions, 0);
 
   auto view = input_tensors[0].GetCpuReadView();
   auto raw_landmarks = view.buffer<float>();
@@ -149,7 +115,8 @@ absl::Status GestureClassifyPreprocessorCalculator::Process(CalculatorContext* c
   // Tensor tensor(Tensor::ElementType::kFloat32, tensor_shape);
   Tensor tensor(Tensor::ElementType::kFloat32, {1, num_landmarks_*2});
   auto* buffer = tensor.GetCpuWriteView().buffer<float>();
-
+  // std::cout << tensor.shape().dims.data()[0]<< "," << tensor.shape().dims.data()[1] << std::endl; // get shape of tensor at each dimension
+  // std::cout << tensor.shape().dims.size() << std::endl; // get num dims of tensor
 
   for (int ld = 0; ld < num_landmarks_; ++ld) {
     const int offset = ld * num_dimensions;
@@ -161,72 +128,28 @@ absl::Status GestureClassifyPreprocessorCalculator::Process(CalculatorContext* c
     }
     _x = raw_landmarks[offset]-base_x;
     _y = raw_landmarks[offset + 1]-base_y;
+    // std::cout << _x << std::endl;
+    // std::cout << _y << std::endl;
 
     maxval = std::max(maxval, std::abs(_x));
     maxval = std::max(maxval, std::abs(_y));
     
 
-    // if (flip_horizontally) {
-    //   landmark->set_x(options_.input_image_width() - raw_landmarks[offset]);
-    // } else {
-    //   landmark->set_x(raw_landmarks[offset]);
-    // }
-    // if (num_dimensions > 1) {
-    //   if (flip_vertically) {
-    //     landmark->set_y(options_.input_image_height() -
-    //                     raw_landmarks[offset + 1]);
-    //   } else {
-    //     landmark->set_y(raw_landmarks[offset + 1]);
-    //   }
-    // }
-    // if (num_dimensions > 2) {
-    //   landmark->set_z(raw_landmarks[offset + 2]);
-    // }
-    // if (num_dimensions > 3) {
-    //   landmark->set_visibility(ApplyActivation(options_.visibility_activation(),
-    //                                            raw_landmarks[offset + 3]));
-    // }
-    // if (num_dimensions > 4) {
-    //   landmark->set_presence(ApplyActivation(options_.presence_activation(),
-    //                                          raw_landmarks[offset + 4]));
-    // }
-    // landmark->set_x(_x);
-    // landmark->set_y(_y);
     landmark_array[2*ld] = _x;
     landmark_array[(2*ld)+1] = _y;
 
   }
 
-  for (int i = 0; i < tensor.element_size() ; ++i){
+  for (int i = 0; i < num_landmarks_*2 ; ++i){
     buffer[i] = landmark_array[i]/maxval;
+    // std::cout << buffer[i] << std::endl;
 
   }
+  // std::cout << buffer.get_size() << std::endl;
 
-  // // Output normalized landmarks if required.
-  // if (kOutNormalizedLandmarkList(cc).IsConnected()) {
-  //   NormalizedLandmarkList output_norm_landmarks;
-  //   for (int i = 0; i < output_landmarks.landmark_size(); ++i) {
-  //     const Landmark& landmark = output_landmarks.landmark(i);
-  //     NormalizedLandmark* norm_landmark = output_norm_landmarks.add_landmark();
-  //     norm_landmark->set_x(landmark.x() / options_.input_image_width());
-  //     norm_landmark->set_y(landmark.y() / options_.input_image_height());
-  //     // Scale Z coordinate as X + allow additional uniform normalization.
-  //     norm_landmark->set_z(landmark.z() / options_.input_image_width() /
-  //                          options_.normalize_z());
-  //     if (landmark.has_visibility()) {  // Set only if supported in the model.
-  //       norm_landmark->set_visibility(landmark.visibility());
-  //     }
-  //     if (landmark.has_presence()) {  // Set only if supported in the model.
-  //       norm_landmark->set_presence(landmark.presence());
-  //     }
-  //   }
-  //   kOutNormalizedLandmarkList(cc).Send(std::move(output_norm_landmarks));
-  // }
 
-  // // Output absolute landmarks.
-  // if (kOutLandmarkList(cc).IsConnected()) {
-  //   kOutLandmarkList(cc).Send(std::move(output_landmarks));
-  // }
+  // std::cout << tensor.element_size()<< std::endl;
+  // std::cout << num_landmarks_*2<< std::endl;
 
   // Return vector with a single tensor.
   auto result = std::vector<Tensor>();
