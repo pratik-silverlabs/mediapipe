@@ -130,6 +130,8 @@ absl::Status LabelsToRenderDataCalculator::Process(CalculatorContext* cc) {
         labels[i] = classifications.classification(i).display_name();
       } else {
         labels[i] = classifications.classification(i).label();
+        // std::cout << classifications.classification(i).label() << std::endl;
+
       }
       scores[i] = classifications.classification(i).score();
     }

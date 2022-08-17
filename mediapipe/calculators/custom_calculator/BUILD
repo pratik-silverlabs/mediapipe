@@ -53,6 +53,7 @@ cc_library(
     deps = [
         "//mediapipe/calculators/util:labels_to_render_data_calculator_cc_proto",
         "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework/api2:node",
         "//mediapipe/framework:calculator_options_cc_proto",
         "//mediapipe/framework/formats:classification_cc_proto",
         "//mediapipe/framework/formats:video_stream_header",

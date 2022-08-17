@@ -213,18 +213,19 @@ node {
 node {
   calculator: "ClassificationListCustomCalculator"
   input_stream: "CLASSIFICATIONS:rock_paper_scissor"
+  output_stream: "LABELS:rock_paper_scissor_allow"
 }
 
 # Converts classification to drawing primitives for annotation overlay.
 node {
   calculator: "LabelsToRenderDataCalculator"
-  input_stream: "CLASSIFICATIONS:allowed_rock_paper_scissor"
+  input_stream: "LABELS:rock_paper_scissor_allow"
   output_stream: "RENDER_DATA:rock_paper_scissors_render_data"
   node_options: {
     [type.googleapis.com/mediapipe.LabelsToRenderDataCalculatorOptions]: {
       color { r: 255 g: 0 b: 200 }
       thickness: 10.0
-      font_height_px: 50
+      font_height_px: 20
       horizontal_offset_px: 30
       vertical_offset_px: 50
 
