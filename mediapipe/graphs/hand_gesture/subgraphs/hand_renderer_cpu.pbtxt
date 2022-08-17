@@ -210,6 +210,11 @@ node {
   }
 }
 
+node {
+  calculator: "ClassificationListCustomCalculator"
+  input_stream: "CLASSIFICATIONS:rock_paper_scissor"
+}
+
 # Converts classification to drawing primitives for annotation overlay.
 node {
   calculator: "LabelsToRenderDataCalculator"

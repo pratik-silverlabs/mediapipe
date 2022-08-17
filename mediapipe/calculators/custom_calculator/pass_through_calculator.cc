@@ -98,85 +98,19 @@ class PassThroughCalculator : public CalculatorBase {
       cc->Outputs().Get("", i).SetSameAs(&cc->Inputs().Get("", i));
     }
 
-    // if (cc->Outputs().HasTag(kStateChangeTag)) {
-    //   cc->Outputs().Tag(kStateChangeTag).Set<bool>();
-    // }
-
     return absl::OkStatus();
   }
 
   absl::Status Open(CalculatorContext* cc) final {
-    // if (cc->InputSidePackets().HasTag(kAllowTag)) {
-    //   use_side_packet_for_allow_disallow_ = true;
-    //   allow_by_side_packet_decision_ =
-    //       cc->InputSidePackets().Tag(kAllowTag).Get<bool>();
-    // } else if (cc->InputSidePackets().HasTag(kDisallowTag)) {
-    //   use_side_packet_for_allow_disallow_ = true;
-    //   allow_by_side_packet_decision_ =
-    //       !cc->InputSidePackets().Tag(kDisallowTag).Get<bool>();
-    // }
 
     cc->SetOffset(TimestampDiff(0));
     num_data_streams_ = cc->Inputs().NumEntries("");
-    // last_gate_state_ = GATE_UNINITIALIZED;
     RET_CHECK_OK(CopyInputHeadersToOutputs(cc->Inputs(), &cc->Outputs()));
-
-    // const auto& options = cc->Options<::mediapipe::PassThroughCalculatorOptions>();
-    // empty_packets_as_allow_ = options.empty_packets_as_allow();
-
-    // if (!use_side_packet_for_allow_disallow_ &&
-    //     !cc->Inputs().HasTag(kAllowTag) && !cc->Inputs().HasTag(kDisallowTag)) {
-    //   use_option_for_allow_disallow_ = true;
-    //   allow_by_option_decision_ = options.allow();
-    // }
 
     return absl::OkStatus();
   }
 
   absl::Status Process(CalculatorContext* cc) final {
-    // bool allow = empty_packets_as_allow_;
-    // if (use_option_for_allow_disallow_) {
-    //   allow = allow_by_option_decision_;
-    // } else if (use_side_packet_for_allow_disallow_) {
-    //   allow = allow_by_side_packet_decision_;
-    // } else {
-    //   if (cc->Inputs().HasTag(kAllowTag) &&
-    //       !cc->Inputs().Tag(kAllowTag).IsEmpty()) {
-    //     allow = cc->Inputs().Tag(kAllowTag).Get<bool>();
-    //   }
-    //   if (cc->Inputs().HasTag(kDisallowTag) &&
-    //       !cc->Inputs().Tag(kDisallowTag).IsEmpty()) {
-    //     allow = !cc->Inputs().Tag(kDisallowTag).Get<bool>();
-    //   }
-    // }
-    // const GateState new_gate_state = allow ? GATE_ALLOW : GATE_DISALLOW;
-
-    // if (cc->Outputs().HasTag(kStateChangeTag)) {
-    //   if (last_gate_state_ != GATE_UNINITIALIZED &&
-    //       last_gate_state_ != new_gate_state) {
-    //     VLOG(2) << "State transition in " << cc->NodeName() << " @ "
-    //             << cc->InputTimestamp().Value() << " from "
-    //             << ToString(last_gate_state_) << " to "
-    //             << ToString(new_gate_state);
-    //     cc->Outputs()
-    //         .Tag(kStateChangeTag)
-    //         .AddPacket(MakePacket<bool>(allow).At(cc->InputTimestamp()));
-    //   }
-    // }
-    // last_gate_state_ = new_gate_state;
-
-    // if (!allow) {
-    //   // Close the output streams if the gate will be permanently closed.
-    //   // Prevents buffering in calculators whose parents do no use SetOffset.
-    //   for (int i = 0; i < num_data_streams_; ++i) {
-    //     if (!cc->Outputs().Get("", i).IsClosed() &&
-    //         use_side_packet_for_allow_disallow_) {
-    //       cc->Outputs().Get("", i).Close();
-    //     }
-    //   }
-    //   return absl::OkStatus();
-    // }
-
     // Process data streams.
     for (int i = 0; i < num_data_streams_; ++i) {
       if (!cc->Inputs().Get("", i).IsEmpty()) {

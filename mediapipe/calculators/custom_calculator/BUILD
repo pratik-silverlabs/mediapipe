@@ -45,3 +45,23 @@ cc_library(
     ],
     alwayslink = 1,
 )
+
+cc_library(
+    name = "classification_list_custom_calculator",
+    srcs = ["classification_list_custom_calculator.cc"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//mediapipe/calculators/util:labels_to_render_data_calculator_cc_proto",
+        "//mediapipe/framework:calculator_framework",
+        "//mediapipe/framework:calculator_options_cc_proto",
+        "//mediapipe/framework/formats:classification_cc_proto",
+        "//mediapipe/framework/formats:video_stream_header",
+        "//mediapipe/framework/port:ret_check",
+        "//mediapipe/framework/port:status",
+        "//mediapipe/framework/port:statusor",
+        "//mediapipe/util:color_cc_proto",
+        "//mediapipe/util:render_data_cc_proto",
+        "@com_google_absl//absl/strings",
+    ],
+    alwayslink = 1,
+)

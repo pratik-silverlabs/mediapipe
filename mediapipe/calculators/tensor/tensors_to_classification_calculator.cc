@@ -234,9 +234,7 @@ absl::Status TensorsToClassificationCalculator::Process(CalculatorContext* cc) {
               });
   }
   kOutClassificationList(cc).Send(std::move(classification_list));
-
-  std::cout << raw_classification_list->at(0).label() << std::endl;
-
+  // std::cout << raw_classification_list->at(0).label() << std::endl;
   return absl::OkStatus();
 }
 
