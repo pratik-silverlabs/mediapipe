@@ -255,7 +255,7 @@ node {
 node {
   calculator: "TensorsToClassificationCalculator"
   input_stream: "TENSORS:gesture_output_tensors"
-  output_stream: "CLASSIFICATIONS:rock_paper_scissor"
+  output_stream: "CLASSIFICATIONS:rps_single"
   options: {
     [mediapipe.TensorsToClassificationCalculatorOptions.ext] {
       top_k: 1
@@ -274,6 +274,13 @@ node {
   input_stream: "ITEM:single_handedness"
   input_stream: "BATCH_END:hand_rects_timestamp"
   output_stream: "ITERABLE:multi_handedness"
+}
+
+node {
+  calculator: "EndLoopClassificationListCalculator"
+  input_stream: "ITEM:rps_single"
+  input_stream: "BATCH_END:hand_rects_timestamp"
+  output_stream: "ITERABLE:rock_paper_scissor"
 }
 
 # Calculate region of interest (ROI) based on detected hand landmarks to reuse

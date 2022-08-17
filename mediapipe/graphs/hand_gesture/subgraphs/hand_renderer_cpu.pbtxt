@@ -187,8 +187,8 @@ node {
   node_options: {
     [type.googleapis.com/mediapipe.LabelsToRenderDataCalculatorOptions]: {
       color { r: 255 g: 0 b: 0 }
-      thickness: 10.0
-      font_height_px: 50
+      thickness: 5.0
+      font_height_px: 25
       horizontal_offset_px: 30
       vertical_offset_px: 50
 
@@ -199,9 +199,20 @@ node {
 }
 
 node {
+  calculator: "ClassificationListVectorHasMinSizeCalculator"
+  input_stream: "ITERABLE:rock_paper_scissor"
+  output_stream: "disallow_rps_rendering"
+  node_options: {
+    [type.googleapis.com/mediapipe.CollectionHasMinSizeCalculatorOptions] {
+      min_size: 2
+    }
+  }
+}
+
+node {
   calculator: "GateCalculator"
   input_stream: "rock_paper_scissor"
-  input_stream: "DISALLOW:disallow_handedness_rendering"
+  input_stream: "DISALLOW:disallow_rps_rendering"
   output_stream: "allowed_rock_paper_scissor"
   node_options: {
     [type.googleapis.com/mediapipe.GateCalculatorOptions] {
@@ -211,22 +222,30 @@ node {
 }
 
 node {
-  calculator: "ClassificationListCustomCalculator"
-  input_stream: "CLASSIFICATIONS:rock_paper_scissor"
-  output_stream: "LABELS:rock_paper_scissor_allow"
+  calculator: "SplitClassificationListVectorCalculator"
+  input_stream: "allowed_rock_paper_scissor"
+  output_stream: "rock_paper_scissor_allow"
+  node_options: {
+    [type.googleapis.com/mediapipe.SplitVectorCalculatorOptions] {
+      ranges: { begin: 0 end: 1 }
+      element_only: true
+    }
+  }
 }
+
+
 
 # Converts classification to drawing primitives for annotation overlay.
 node {
   calculator: "LabelsToRenderDataCalculator"
-  input_stream: "LABELS:rock_paper_scissor_allow"
+  input_stream: "CLASSIFICATIONS:rock_paper_scissor_allow"
   output_stream: "RENDER_DATA:rock_paper_scissors_render_data"
   node_options: {
     [type.googleapis.com/mediapipe.LabelsToRenderDataCalculatorOptions]: {
       color { r: 255 g: 0 b: 200 }
-      thickness: 10.0
-      font_height_px: 20
-      horizontal_offset_px: 30
+      thickness: 5.0
+      font_height_px: 25
+      horizontal_offset_px: 150
       vertical_offset_px: 50
 
       max_num_labels: 1
@@ -244,7 +263,7 @@ node {
   input_stream: "multi_hand_rects_render_data"
   input_stream: "multi_palm_rects_render_data"
   input_stream: "handedness_render_data"
-  # input_stream: "rock_paper_scissors_render_data"
+  input_stream: "rock_paper_scissors_render_data"
   input_stream: "VECTOR:0:multi_hand_landmarks_render_data"
   output_stream: "IMAGE:output_image"
 }
