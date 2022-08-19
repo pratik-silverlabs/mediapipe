@@ -50,3 +50,20 @@ cc_library(
     ],
 )
 
+cc_library(
+    name = "mobile_calculators",
+    deps = [
+        "//mediapipe/calculators/core:constant_side_packet_calculator",
+        "//mediapipe/calculators/core:flow_limiter_calculator",
+        "//mediapipe/calculators/custom_calculator:gesture_classify_preprocessor_calculator",
+        "//mediapipe/graphs/hand_gesture/subgraphs:hand_renderer_cpu",
+        "//mediapipe/modules/hand_gesture:hand_gesture_cpu",
+    ],
+)
+
+mediapipe_binary_graph(
+    name = "hand_gesture_mobile_binary_graph",
+    graph = "hand_gesture_mobile.pbtxt",
+    output_name = "hand_gesture_mobile.binarypb",
+    deps = [":mobile_calculators"],
+)

@@ -111,7 +111,9 @@ absl::Status GestureClassifyPreprocessorCalculator::Process(CalculatorContext* c
   float base_y = 0;
   float _x = 0;
   float _y = 0;
-  float landmark_array[num_landmarks_*2] = {};
+  // float landmark_array[num_landmarks_*2] = {};
+  float landmark_array[num_landmarks_*2] ;
+  memset( landmark_array, 0, num_landmarks_*2*sizeof(float) );
   // Tensor tensor(Tensor::ElementType::kFloat32, tensor_shape);
   Tensor tensor(Tensor::ElementType::kFloat32, {1, num_landmarks_*2});
   auto* buffer = tensor.GetCpuWriteView().buffer<float>();

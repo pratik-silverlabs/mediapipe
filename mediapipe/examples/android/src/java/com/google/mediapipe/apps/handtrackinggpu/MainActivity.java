@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.mediapipe.apps.handtrackinggpu;
+package com.google.mediapipe.apps.handgesture;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** Main activity of MediaPipe hand tracking app. */
+/** Main activity of MediaPipe handgesture app. */
 public class MainActivity extends com.google.mediapipe.apps.basic.MainActivity {
   private static final String TAG = "MainActivity";
 
