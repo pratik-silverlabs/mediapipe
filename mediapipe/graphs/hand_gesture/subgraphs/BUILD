@@ -36,7 +36,8 @@ mediapipe_simple_subgraph(
         "//mediapipe/calculators/util:labels_to_render_data_calculator",
         "//mediapipe/calculators/util:landmarks_to_render_data_calculator",
         "//mediapipe/calculators/util:rect_to_render_data_calculator",
-        "//mediapipe/calculators/custom_calculator:classification_list_custom_calculator"
+        "//mediapipe/calculators/custom_calculator:classification_list_custom_calculator",
+        "//mediapipe/calculators/util:to_image_calculator",
     ],
 )
 

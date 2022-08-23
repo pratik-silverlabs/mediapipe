@@ -58,7 +58,9 @@ cc_library(
         "//mediapipe/calculators/custom_calculator:gesture_classify_preprocessor_calculator",
         "//mediapipe/graphs/hand_gesture/subgraphs:hand_renderer_cpu",
         "//mediapipe/modules/hand_gesture:hand_gesture_cpu",
-    ],
+        "//mediapipe/calculators/util:to_image_calculator",
+        "//mediapipe/gpu:gpu_buffer_to_image_frame_calculator",
+        "//mediapipe/gpu:image_frame_to_gpu_buffer_calculator",    ],
 )
 
 mediapipe_binary_graph(
